@@ -1,0 +1,2 @@
+Fix-the-compile-issue-under-gcc6.patch -p1
+Fix-gcc6-build-error-in-Vivante-driver.patch -p1
