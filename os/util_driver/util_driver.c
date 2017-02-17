@@ -31,6 +31,7 @@
 
 #include <util_driver.h>
 
+#define	DEBUG_MSGS
 
 
 /*  SPI Usage.
@@ -92,6 +93,8 @@ int spi_dev;
     spi->max_speed_hz = 20000;
     spi->bits_per_word = 32;
     spi_setup( spi );
+
+printk( "util_spi_probe(): spi->modalias == %s\n", spi->modalias );
 
     for( spi_dev = 0; spi_dev < NUM_SPI_DEVICES; spi_dev++ ) {
         if( !strcmp( spi->modalias, spiDevices[ spi_dev ].modalias) ) {

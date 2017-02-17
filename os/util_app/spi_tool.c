@@ -92,9 +92,9 @@ static void spiToolExecute()
 
 int fd, err, i;
 
-    fd = open( "/dev/spi_tool2", O_RDWR );
+    fd = open( "/dev/spi_tool1", O_RDWR );
     if( fd < 0 ) {
-	printf( "open() failed on /dev/spi_tool2\n" );
+	printf( "open() failed on /dev/spi_tool1\n" );
 	perror( "open error" );
 	exit( 1 );
     }
@@ -107,13 +107,13 @@ int fd, err, i;
     if( width == 4 ) {
         err = ioctl( fd, DRONE_IOCTL_SET_32_BIT_WORDS );
         if( err < 0 ) {
-	    printf( "ioctl() 32 Bit Words failed on /dev/spi_tool2\n" );
+	    printf( "ioctl() 32 Bit Words failed on /dev/spi_tool1\n" );
 	    exit( 1 );
         }
     } else {
         err = ioctl( fd, DRONE_IOCTL_SET_16_BIT_WORDS );
         if( err < 0 ) {
-	    printf( "ioctl() 32 Bit Words failed on /dev/spi_tool2\n" );
+	    printf( "ioctl() 32 Bit Words failed on /dev/spi_tool1\n" );
 	    exit( 1 );
         }
     }
@@ -126,13 +126,13 @@ int fd, err, i;
 
     err = ioctl( fd, DRONE_IOCTL_SET_RATE, 50000 );
     if( err < 0 ) {
-	printf( "ioctl() (Set Rate) failed on /dev/spi_tool2\n" );
+	printf( "ioctl() (Set Rate) failed on /dev/spi_tool1\n" );
 	exit( 1 );
     }
 
     err = ioctl( fd, DRONE_IOCTL_SET_MODE_3 );
     if( err < 0 ) {
-	printf( "ioctl() (Set Mode 3) failed on /dev/spi_tool2\n" );
+	printf( "ioctl() (Set Mode 3) failed on /dev/spi_tool1\n" );
 	exit( 1 );
     }
 #endif

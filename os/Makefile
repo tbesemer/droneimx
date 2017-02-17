@@ -1,6 +1,11 @@
 
+.PHONY:	kernel
 kernel:
 	cd kernel; make ARCH=arm
+	cp -p kernel/arch/arm/boot/zImage images/
+
+kernel_dtb:
+	cd kernel; make ARCH=arm dtbs
 
 kernel_clean:
 	cd kernel; make ARCH=arm clean
