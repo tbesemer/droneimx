@@ -12,6 +12,10 @@
 
 #include	"util_driver.h"
 
+#include "deca_types.h"
+#include "deca_param_types.h"
+#include "deca_regs.h"
+#include "deca_device_api.h"
 
 static void spiToolHelp();
 static void spiToolExecute();
@@ -86,11 +90,12 @@ int i;
 static char bigBuff[ 1536 ];
 
 static int  tmpData = 0x80018001;
+static int fd;
 
 static void spiToolExecute()
 {
 
-int fd, err, i;
+int err, i;
 
     fd = open( "/dev/spi_tool1", O_RDWR );
     if( fd < 0 ) {
@@ -100,8 +105,10 @@ int fd, err, i;
     }
 
     err = ioctl( fd, DRONE_IOCTL_SET_RATE, 2000000 );
-    err = ioctl( fd, DRONE_IOCTL_SET_MODE_3 );
+    err = ioctl( fd, DRONE_IOCTL_SET_MODE_0 );
     err = ioctl( fd, DRONE_IOCTL_SET_8_BIT_WORDS );
+
+    printf( "Device ID: 0x%08X\n", dwt_readdevid() );
 
 #ifdef	DONT
     if( width == 4 ) {
@@ -137,11 +144,13 @@ int fd, err, i;
     }
 #endif
 
+#ifdef	DO_BIG_BUFF
     for( i = 0; i < 1536; i++ )
 	bigBuff[ i ] = 0x55;
 
     err = write( fd, bigBuff, 1 );
     printf( "return count = %d\n", err );
+#endif
 
 
 #undef	CHECK_READ
@@ -153,5 +162,50 @@ int fd, err, i;
 #endif
 
     close( fd );
+
+}
+
+void decamutexoff( int mutexState )
+{
+    return;
+}
+
+int decamutexon( void )
+{
+    return( 0 );
+}
+
+void deca_sleep( unsigned int time_ms )
+{
+    usleep( time_ms * 1000 );
+}
+
+int readfromspi(uint16 headerLength, const uint8 *headerBuffer, uint32 readlength, uint8 *readBuffer)
+{
+int cnt;
+
+    printf( "headerlength = %d, readlength = %d\n", headerLength, readlength );
+
+    for( cnt = 0; cnt < headerLength; cnt++ ) {
+	printf( "0x%02X ", headerBuffer[ cnt ] );
+    }
+    printf( "\n" );
+
+    cnt = write( fd, headerBuffer, (int)headerLength );
+    printf( "readfromspi(): Write of %d returned %d\n", headerLength, cnt );
+
+    cnt = read( fd, readBuffer, readlength );
+    printf( "readfromspi(): Read of %d returned %d\n", readlength, cnt );
+
+}
+
+int writetospi(uint16 headerLength, const uint8 *headerBuffer, uint32 bodylength, const uint8 *bodyBuffer)
+{
+
+    cnt = write( fd, headerBuffer, (int)headerLength );
+    printf( "writetospi(): Write Header of %d returned %d\n", headerLength, cnt );
+
+    cnt = write( fd, bodyBuffer, (int)bodylength );
+    printf( "writetospi(): Write Header of %d returned %d\n", headerLength, cnt );
 
 }
