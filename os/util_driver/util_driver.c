@@ -33,6 +33,11 @@
 
 #define	DEBUG_MSGS
 
+/*  External References.
+ */
+extern void spi_imx_csFlagEnable( struct spi_device *spi );
+extern void spi_imx_csFlagDisable( struct spi_device *spi );
+
 
 /*  SPI Usage.
  */
@@ -213,6 +218,19 @@ struct spi_device  *spi;
 #endif
             spi->max_speed_hz = (u32)arg;
             spi_setup( spi );
+	    break;
+
+	case DRONE_IOCTL_DW1000_CS_ASSERT:
+#ifdef	DEBUG_MSGS
+	    printk( "util_spi_ioctl(): Asserting Chip Select\n" );
+#endif
+		spi_imx_csFlagEnable( spi );
+	    break;
+	case DRONE_IOCTL_DW1000_CS_CLEAR:
+#ifdef	DEBUG_MSGS
+	    printk( "util_spi_ioctl(): Clearing Chip Select\n" );
+#endif
+		spi_imx_csFlagDisable( spi );
 	    break;
 
 	default:

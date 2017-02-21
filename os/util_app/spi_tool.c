@@ -104,7 +104,7 @@ int err, i;
 	exit( 1 );
     }
 
-    err = ioctl( fd, DRONE_IOCTL_SET_RATE, 2000000 );
+    err = ioctl( fd, DRONE_IOCTL_SET_RATE, 200000 );
     err = ioctl( fd, DRONE_IOCTL_SET_MODE_0 );
     err = ioctl( fd, DRONE_IOCTL_SET_8_BIT_WORDS );
 
@@ -186,6 +186,8 @@ int cnt;
 
     printf( "headerlength = %d, readlength = %d\n", headerLength, readlength );
 
+    ioctl( fd,  DRONE_IOCTL_DW1000_CS_ASSERT );
+
     for( cnt = 0; cnt < headerLength; cnt++ ) {
 	printf( "0x%02X ", headerBuffer[ cnt ] );
     }
@@ -197,10 +199,13 @@ int cnt;
     cnt = read( fd, readBuffer, readlength );
     printf( "readfromspi(): Read of %d returned %d\n", readlength, cnt );
 
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_CLEAR );
 }
 
 int writetospi(uint16 headerLength, const uint8 *headerBuffer, uint32 bodylength, const uint8 *bodyBuffer)
 {
+
+    ioctl( fd,  DRONE_IOCTL_DW1000_CS_ASSERT );
 
     cnt = write( fd, headerBuffer, (int)headerLength );
     printf( "writetospi(): Write Header of %d returned %d\n", headerLength, cnt );
@@ -208,4 +213,5 @@ int writetospi(uint16 headerLength, const uint8 *headerBuffer, uint32 bodylength
     cnt = write( fd, bodyBuffer, (int)bodylength );
     printf( "writetospi(): Write Header of %d returned %d\n", headerLength, cnt );
 
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_CLEAR );
 }

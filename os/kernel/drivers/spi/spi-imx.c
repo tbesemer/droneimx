@@ -729,6 +729,27 @@ static const struct of_device_id spi_imx_dt_ids[] = {
 };
 MODULE_DEVICE_TABLE(of, spi_imx_dt_ids);
 
+int drone_csFlag = 0;
+
+void spi_imx_csFlagEnable( struct spi_device *spi )
+{
+        drone_csFlag = 1;
+}
+
+EXPORT_SYMBOL_GPL(spi_imx_csFlagEnable);
+
+void spi_imx_csFlagDisable( struct spi_device *spi )
+{
+        struct spi_imx_data *spi_imx = spi_master_get_devdata(spi->master);
+        int gpio = spi_imx->chipselect[spi->chip_select];
+
+        drone_csFlag = 0;
+        gpio_set_value(gpio, 1);
+}
+
+EXPORT_SYMBOL_GPL(spi_imx_csFlagDisable);
+
+
 static void spi_imx_chipselect(struct spi_device *spi, int is_active)
 {
 	struct spi_imx_data *spi_imx = spi_master_get_devdata(spi->master);
@@ -739,7 +760,15 @@ static void spi_imx_chipselect(struct spi_device *spi, int is_active)
 	if (!gpio_is_valid(gpio))
 		return;
 
-	gpio_set_value(gpio, dev_is_lowactive ^ active);
+        if( drone_csFlag == 0 ) {
+                gpio_set_value(gpio, dev_is_lowactive ^ active);
+        } else {
+                if( !active ) {
+                        return;
+                }  else {
+                        gpio_set_value(gpio, dev_is_lowactive ^ active);
+                }
+        }
 }
 
 static void spi_imx_push(struct spi_imx_data *spi_imx)
