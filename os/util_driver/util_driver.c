@@ -43,7 +43,7 @@ extern void spi_imx_csFlagDisable( struct spi_device *spi );
  */
 static int  util_spi_probe( struct spi_device *spi );
 
-#define NUM_SPI_DEVICES	1
+#define NUM_SPI_DEVICES	2
 #define SPI_DEV_INVALID	0
 #define SPI_DEV_VALID	1
 
@@ -71,6 +71,17 @@ static struct DRONE_SPI_DEVICE_PRIVATE spiDevices[ NUM_SPI_DEVICES ] = {
         .util_spi_driver.probe = util_spi_probe,
     },
 
+    {
+        .valid_flag = SPI_DEV_VALID,
+        .minor_num = 1,
+	.modalias = "drone_spi2",
+	.spi = NULL,
+	.util_spi_driver.driver = {
+	    .name = "drone_spi2",
+	    .owner = THIS_MODULE,
+	},
+        .util_spi_driver.probe = util_spi_probe,
+    },
 };
 
 
@@ -221,12 +232,14 @@ struct spi_device  *spi;
 	    break;
 
 	case DRONE_IOCTL_DW1000_CS_ASSERT:
+	case DRONE_IOCTL_SS1_CS_ASSERT:
 #ifdef	DEBUG_MSGS
 	    printk( "util_spi_ioctl(): Asserting Chip Select\n" );
 #endif
 		spi_imx_csFlagEnable( spi );
 	    break;
 	case DRONE_IOCTL_DW1000_CS_CLEAR:
+	case DRONE_IOCTL_SS1_CS_CLEAR:
 #ifdef	DEBUG_MSGS
 	    printk( "util_spi_ioctl(): Clearing Chip Select\n" );
 #endif
