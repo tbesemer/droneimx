@@ -16,6 +16,7 @@
 
 static void spiToolHelp();
 static void dw1000_deviceId();
+static int mpu9250_test();
 
 static int	verboseFlag;
 static int	data = 0;
@@ -28,7 +29,7 @@ int main (int argc, char *argv[])
 int	c;
 int	status;
 
-    while( (c = getopt( argc, argv, "c:d:slhv:" )) != EOF ) {
+    while( (c = getopt( argc, argv, "c:d:slhv:12" )) != EOF ) {
 	switch (c) {
 	    case 'c':
 		sscanf(optarg, "0x%x", &cnt );
@@ -45,6 +46,12 @@ int	status;
 	    case 'v':
 		sscanf(optarg, "%d", &verboseFlag );
 		break;
+	    case '1':
+    		dw1000_deviceId();
+		break;
+	    case '2':
+    		mpu9250_test();
+		break;
 	    case 'h':
 	    default:
 		spiToolHelp();
@@ -54,7 +61,6 @@ int	status;
 	}
     }
 
-    dw1000_deviceId();
     exit( 0 );
 
 }
@@ -88,4 +94,59 @@ static void dw1000_deviceId()
 {
     decaHalOpen();
     decaHalClose();
+}
+
+static int mpu9250_test()
+{
+int err, cnt, i, fd;
+char buff[ 2 ];
+
+    err = 0;
+
+printf( "mpu9250_test(): Running\n" );
+
+    fd = open( "/dev/spi_drone1", O_RDWR );
+    if( fd < 0 ) {
+        printf( "mpu9250(): open() failed on /dev/spi_drone1\n" );
+        perror( "open error" );
+        return( -1 );
+    }
+
+    err += ioctl( fd, DRONE_IOCTL_SET_RATE, 200000 );
+    err += ioctl( fd, DRONE_IOCTL_SET_MODE_0 );
+    err += ioctl( fd, DRONE_IOCTL_SET_8_BIT_WORDS );
+    if( err ) {
+        printf( "mpu9250(): ioctl() failed on /dev/spi_drone1\n" );
+        return( -1 );
+    }
+
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_ASSERT );
+    buff[ 0 ] = 0x6A;
+    buff[ 1 ] = 0x10;
+    cnt = write( fd, buff, 2 );
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_CLEAR );
+
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_ASSERT );
+    buff[ 0 ] = 0x87 | 0x80;
+    cnt = write( fd, buff, 1 );
+    cnt = read( fd, buff, 1 );
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_CLEAR );
+
+    printf( "buff[ 0 ] = 0x%02X\n", buff[ 0 ] );
+
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_ASSERT );
+    buff[ 0 ] = 0x1C;
+    buff[ 1 ] = 0x10;
+    cnt = write( fd, buff, 2 );
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_CLEAR );
+
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_ASSERT );
+    buff[ 0 ] = 0x1C | 0x80;
+    cnt = write( fd, buff, 1 );
+    cnt = read( fd, buff, 1 );
+    ioctl( fd, DRONE_IOCTL_DW1000_CS_CLEAR );
+
+    printf( "buff[ 0 ] = 0x%02X\n", buff[ 0 ] );
+
+    close( fd );
 }
