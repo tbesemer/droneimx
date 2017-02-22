@@ -1,11 +1,11 @@
 export ENV_ROOT := $(shell cd ../;pwd)
 
-CFLAGS := -I ${ENV_ROOT}/dw1000/decadriver
-DECA_ROOT := ${ENV_ROOT}/dw1000/decadriver
-DECA_OBJS := ${DECA_ROOT}/deca_device.o ${DECA_ROOT}/deca_params_init.o
+CFLAGS := -I ${ENV_ROOT}/dw1000/hal
+LIB_PATH := ${ENV_ROOT}/lib
+LIBS := ${LIB_PATH}/libdw1000_hal.a ${LIB_PATH}/libdeca_driver.a
 		
 spi_tool: spi_tool.o 
-	${CC} ${CFLAGS} -o spi_tool spi_tool.o ${DECA_OBJS}
+	${CC} ${CFLAGS} -o spi_tool spi_tool.o ${DECA_OBJS} ${LIBS}
 	cp spi_tool ~/drone/
 
 spi_tool.o: spi_tool.c util_driver.h

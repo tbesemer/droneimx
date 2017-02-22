@@ -1,3 +1,6 @@
+all: test_code
+
+clean: test_code_clean
 
 .PHONY:	kernel
 kernel:
@@ -23,3 +26,14 @@ kernel_xconfig:
 kernel_saveconfig:
 	cp kernel/.config config/imx6_config
 
+.PHONY: test_code
+test_code:
+	make -C dw1000/decadriver
+	make -C dw1000/hal
+	make -C util_app
+
+.PHONY: test_code_clean
+test_code_clean:
+	make -C dw1000/decadriver clean
+	make -C dw1000/hal clean
+	make -C util_app clean
