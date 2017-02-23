@@ -1,4 +1,4 @@
-export ENV_ROOT := $(shell cd ../../;pwd)
+export ENV_ROOT := $(shell cd ../../../;pwd)
 
 HEADER_FILES := deca_device_api.h deca_param_types.h deca_regs.h deca_types.h deca_version.h
 

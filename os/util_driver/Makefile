@@ -1,13 +1,13 @@
 
-export ENV_ROOT := $(shell cd ../;pwd)
+export ENV_ROOT := $(shell cd ../../;pwd)
 export CROSS_COMPILE=arm-poky-linux-gnueabi-
 export ARCH=arm
 
 
 CFILES := util_driver.c
 
-KDIR=${ENV_ROOT}/kernel
-CFLAGS_MODULE += -I ${ENV_ROOT}/util_app 
+KDIR=${ENV_ROOT}/os/kernel
+CFLAGS_MODULE += -I ${ENV_ROOT}/app/util_app 
 
 obj-m := util_driver.o
 
