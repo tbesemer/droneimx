@@ -10,8 +10,10 @@
 #include	<sys/ioctl.h>
 #include	<unistd.h>
 
-#include	"util_driver.h"
-#include	"dw1000_hal.h"
+#include	<sys_types.h>
+#include	<util_driver.h>
+#include	<dw1000_hal.h>
+#include	<mpu9250_hal.h>
 
 
 static void spiToolHelp();

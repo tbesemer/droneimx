@@ -1,6 +1,6 @@
 export ENV_ROOT := $(shell cd ../../../;pwd)
 
-CFLAGS := -I ${ENV_ROOT}/app/dw1000/decadriver -I ${ENV_ROOT}/app/util_app
+CFLAGS := -I ${ENV_ROOT}/app/dw1000/decadriver -I ${ENV_ROOT}/include
 DECA_ROOT := ${ENV_ROOT}/app/dw1000/decadriver
 		
 libdw1000_hal.a: dw1000_hal.o 
