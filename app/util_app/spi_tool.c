@@ -100,55 +100,11 @@ static void dw1000_deviceId()
 
 static int mpu9250_test()
 {
-int err, cnt, i, fd;
-char buff[ 2 ];
+uint8_t regVal;
 
-    err = 0;
-
-printf( "mpu9250_test(): Running\n" );
-
-    fd = open( "/dev/spi_drone2", O_RDWR );
-    if( fd < 0 ) {
-        printf( "mpu9250(): open() failed on /dev/spi_drone2\n" );
-        perror( "open error" );
-        return( -1 );
-    }
-
-    err += ioctl( fd, DRONE_IOCTL_SET_RATE, 200000 );
-    err += ioctl( fd, DRONE_IOCTL_SET_MODE_0 );
-    err += ioctl( fd, DRONE_IOCTL_SET_8_BIT_WORDS );
-    if( err ) {
-        printf( "mpu9250(): ioctl() failed on /dev/spi_drone2\n" );
-        return( -1 );
-    }
-
-    ioctl( fd, DRONE_IOCTL_SS1_CS_ASSERT );
-    buff[ 0 ] = 0x6A;
-    buff[ 1 ] = 0x10;
-    cnt = write( fd, buff, 2 );
-    ioctl( fd, DRONE_IOCTL_SS1_CS_CLEAR );
-
-    ioctl( fd, DRONE_IOCTL_SS1_CS_ASSERT );
-    buff[ 0 ] = 0x87 | 0x80;
-    cnt = write( fd, buff, 1 );
-    cnt = read( fd, buff, 1 );
-    ioctl( fd, DRONE_IOCTL_SS1_CS_CLEAR );
-
-    printf( "buff[ 0 ] = 0x%02X\n", buff[ 0 ] );
-
-    ioctl( fd, DRONE_IOCTL_SS1_CS_ASSERT );
-    buff[ 0 ] = 0x1C;
-    buff[ 1 ] = 0x10;
-    cnt = write( fd, buff, 2 );
-    ioctl( fd, DRONE_IOCTL_SS1_CS_CLEAR );
-
-    ioctl( fd, DRONE_IOCTL_SS1_CS_ASSERT );
-    buff[ 0 ] = 0x1C | 0x80;
-    cnt = write( fd, buff, 1 );
-    cnt = read( fd, buff, 1 );
-    ioctl( fd, DRONE_IOCTL_SS1_CS_CLEAR );
-
-    printf( "buff[ 0 ] = 0x%02X\n", buff[ 0 ] );
-
-    close( fd );
+    mpu9250HalOpen();
+    mpu9250HalReadReg( 0x87, &regVal );
+    mpu9250HalClose();
+    
+    return( 0 );
 }

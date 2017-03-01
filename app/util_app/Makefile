@@ -3,7 +3,7 @@ export ENV_ROOT := $(shell cd ../../;pwd)
 CFLAGS := -I ${ENV_ROOT}/app/dw1000/hal -I ${ENV_ROOT}/include -I ${ENV_ROOT}/app/mpu9250/hal
 
 LIB_PATH := ${ENV_ROOT}/lib
-LIBS := ${LIB_PATH}/libdw1000_hal.a ${LIB_PATH}/libdeca_driver.a
+LIBS := ${LIB_PATH}/libdw1000_hal.a ${LIB_PATH}/libdeca_driver.a ${LIB_PATH}/libmpu9250_hal.a
 		
 spi_tool: spi_tool.o 
 	${CC} ${CFLAGS} -o spi_tool spi_tool.o ${DECA_OBJS} ${LIBS}
