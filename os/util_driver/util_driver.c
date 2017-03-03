@@ -31,7 +31,7 @@
 
 #include <util_driver.h>
 
-#define	DEBUG_MSGS
+#undef	DEBUG_MSGS
 
 /*  External References.
  */
@@ -138,7 +138,9 @@ static int util_spi_ioctl( int minor, int cmd, unsigned long arg )
 {
 struct spi_device  *spi;
 
+#ifdef	DEBUG_MSGS
     printk( "util_spi_ioctl(): Minor = %d, cmd = 0x%04X, arg = %d\n", minor, cmd, (int)arg );
+#endif
 
     if( (minor < 0) || (minor >= NUM_SPI_DEVICES) ) {
 	printk( "util_spi_ioctl(): Invalid Minor %d\n", minor );
@@ -266,7 +268,9 @@ struct spi_device  *spi;
 size_t tmpCount;
 int rc;
 
-//    printk( "util_spi_write(): minor = %d, count = %d\n", minor, count );
+#ifdef	DEBUG_MSGS
+    printk( "util_spi_write(): minor = %d, count = %d\n", minor, count );
+#endif
 
     if( (minor < 0) || (minor >= NUM_SPI_DEVICES) ) {
 	printk( "util_spi_write(): Invalid Minor %d\n", minor );
@@ -325,7 +329,9 @@ static ssize_t util_spi_read( int minor, char __user *buf, size_t count )
 struct spi_device  *spi;
 int rc;
 
+#ifdef	DEBUG_MSGS
     printk( "util_spi_read(): minor = %d, count = %d\n", minor, count );
+#endif
 
     if( (minor < 0) || (minor >= NUM_SPI_DEVICES) ) {
 	printk( "util_spi_read(): Invalid Minor %d\n", minor );

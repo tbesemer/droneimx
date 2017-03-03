@@ -7,7 +7,7 @@ export ARCH=arm
 CFILES := util_driver.c
 
 KDIR=${ENV_ROOT}/os/kernel
-CFLAGS_MODULE += -I ${ENV_ROOT}/app/util_app 
+CFLAGS_MODULE += -I ${ENV_ROOT}/include
 
 obj-m := util_driver.o
 
